@@ -1,7 +1,4 @@
-'use strict'
-
-'use strict'
-
+'use strict';
 $(document).ready(function() {
     function Image(animal) {
         this.title = animal.title;
@@ -11,188 +8,109 @@ $(document).ready(function() {
         this.horns = animal.horns;
         Image.all.push(this);
     }
-
     Image.all = []
-        // console.log(Image.all);
-
-    function Image2(animal2) {
-        this.title = animal2.title;
-        this.image_url = animal2.image_url;
-        this.description = animal2.description;
-        this.keyword = animal2.keyword;
-        this.horns = animal2.horns;
-        Image2.all.push(this);
-    }
-
-    Image2.all = []
-        // for (let i = 0; i < Image.all.length; i++) {
-        //     if (uiniqueKey.includes(Image.all[i].keyword)) {
-        //         continue;
-        //     } else {
-        //         uiniqueKey.push(Image.all[i].keyword);
-        //     }
-
-    // }
     Image.prototype.render = function() {
-        let $animalClone = $("#photo-template").html();
+        let $animalClone = $('#photo-template').html();
         var rendered = Mustache.render($animalClone, this);
-        $('main').append(rendered);
-        // let $animalClone = $("#photo-template").clone();
-        // $animalClone.find("h2").text(this.title);
-        // $animalClone.find("img").attr("src", this.image_url);
-        // $animalClone.find("p").text(this.description);
-        // $animalClone.attr("id", this.title);
-        // $animalClone.removeAttr('id');
-        // $animalClone.attr('class', this.keyword);
-        // $('main').append($animalClone);
+        $('#horns-rendered').append(rendered);
     };
-
-    Image2.prototype.render = function() {
-        let $animalClone2 = $("#photo-template").html();
-        var rendered2 = Mustache.render($animalClone2, this);
-        $('main').append(rendered2);
-    };
-
-    const readJson = () => {
-        $.ajax("data/page-1.json", { method: "GET", dataType: "JSON" }).then(data => {
+    const readJson = (pageNum) => {
+        $('#horns-rendered').html('');
+        $.ajax(`data/page-${pageNum}.json`, { method: 'GET', dataType: 'JSON' }).then(data => {
             data.forEach(animalItem => {
                 let animal = new Image(animalItem);
                 animal.render();
-                animal.list();
-                renderSelection();
-                // animal.pageRender();
-            });
-        });
-    };
-    readJson();
-
-    const readJson2 = () => {
-        $.ajax("data/page-2.json", { method: "GET", dataType: "JSON" }).then(data => {
-            data.forEach(animalItem2 => {
-                let animal2 = new Image2(animalItem2);
-                animal2.render();
-                animal2.list();
                 renderSelection();
             });
+            list();
         });
     };
-    readJson2();
-
-
-
+    readJson(1);
 
 
     let uiniqueKey = [];
-    Image.prototype.list = function() {
 
-        if (!uiniqueKey.includes(this.keyword)) {
-            uiniqueKey.push(this.keyword)
-                // console.log(this);
-            let $newOption = $('<option></option>');
-            $('select').append($newOption);
-            $($newOption).text(this.keyword);
-            $($newOption).attr('value', this.keyword);
-        }
-        // $('select').attr('id', this.keyword);
+
+    function list() {
+        // console.log(uiniqueKey);
+        uiniqueKey = [];
+        $('select').empty();
+        $('select').append($('<option>Filter by Keyword</option>'));
+        // this function can be a prototype as well. (instead of val, pass this)
+        Image.all.forEach(val => {
+                if (!uiniqueKey.includes(val.keyword)) {
+                    uiniqueKey.push(val.keyword)
+                    let $newOption = $('<option></option>');
+                    $('select').append($newOption);
+                    $($newOption).text(val.keyword);
+                    $($newOption).attr('value', val.keyword);
+
+                }
+            })
+            // console.log(uiniqueKey);
     }
 
-    // let uiniqueKey2 = [];
-    Image2.prototype.list = function() {
-
-            if (!uiniqueKey.includes(this.keyword)) {
-                uiniqueKey.push(this.keyword)
-                    // console.log(this);
-                let $newOption = $('<option></option>');
-                $('select').append($newOption);
-                $($newOption).text(this.keyword);
-                $($newOption).attr('value', this.keyword);
-            }
-        }
-        // console.log(uiniqueKey);
-
-    // $('main section').each(function() {
-    //    
-    //     if (selection === $(this).attr('class')) {
-    //         $(this).show();
-    //         console.log($(this));
-    //     }
-
-
-    // })
-
-    // }
-
     const renderSelection = () =>
-        $('select').change(function() {
-            $('main section').each(function() {
-                if ($(this).attr('class') === $('select').val()) {
-                    $(this).show();
-                }
-                if ($(this).attr('class') !== $('select').val()) {
-                    $(this).hide();
-                }
-            })
+        $('select').on('change', () => {
+            let selectValue = $('select').val();
+            $(' #horns-rendered section').hide();
+            $(`.${selectValue}`).show();
         })
     renderSelection();
-    // $('select').on('click', function() {
-    //     let selection = $(this).val();
-    //     console.log(selection);
-    //     if (selection === 'default') {
-    //         $('main').show();
-    //     } else {
-    //         $('main').hide();
-    //         // let valueOfOption = $(this).children("optiosn:selected").val();
-    //         // console.log(valueOfOption);
-    //         $('.' + selection).show();
-    //     }
-    // })
 
-    const renderSelection2 = () =>
-        $('select').change(function() {
-            $('main section').each(function() {
-                if ($(this).attr('class') === $('select').val()) {
-                    $(this).show();
-                }
-                if ($(this).attr('class') !== $('select').val()) {
-                    $(this).hide();
-                }
-            })
-        })
-    renderSelection2();
 
     function pageRender() {
-
         $('#button1').on('click', function() {
+            Image.all = [];
+            readJson(1);
+            // console.log(option1);
 
-            // $('main section').hide();
-            for (let i = 0; i < Image.all.length; i++) {
-                // $('main section').html(Image.all[i].title);
-                console.log(i);
-            }
-            console.log(Image.all);
         })
+        $('#button2').on('click', function() {
+            Image.all = [];
+            readJson(2);
+            // console.log(option2);
 
+        })
     }
     pageRender();
 
-    // {
+    function sortBy(array, property) {
+        array.sort((a, b) => {
+            let firstItem = a[property];
+            let secondItem = b[property];
+            if (property === 'title') {
+                firstItem = firstItem.toUpperCase();
+                secondItem = secondItem.toUpperCase();
+            }
 
-    //     $(this).show();
-    //     console.log(this);
-    // })
-    // }
-    // }
-    // console.log(this);
-    // console.log($(this));
-    // $('main section').each(function() {
-    //     let i1 = 0;
-    //     if (i1 <= 20) {
-    //         $(this).show();
-    //         console.log($(this));
-    //     }
-    // })
+            if (firstItem > secondItem) {
+                return 1;
 
+            } else if (firstItem < secondItem) {
+                return -1;
+            } else { return 0; }
 
 
+        })
 
-})
+    }
+
+    $("#radio1").on('click', () => {
+        sortBy(Image.all, 'title');
+        $('#horns-rendered').html('');
+        Image.all.forEach(image => image.render());
+
+    })
+
+
+    $("#radio2").on('click', () => {
+        sortBy(Image.all, 'horns')
+        $('#horns-rendered').html('');
+        Image.all.forEach(image => image.render());
+    })
+
+    // renderSelection();
+
+
+});

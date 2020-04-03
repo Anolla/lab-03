@@ -1,32 +1,27 @@
 * {
     font-family: 'Gloria Hallelujah', cursive;
+    color: rgb(107, 104, 104);
+}
+
+main {
+    display: flex;
 }
 
 body {
-    text-align: center;
-    /* width: 500px; */
-    margin: 0 auto;
-}
-
-img {
-    height: 200px;
-    width: 200px;
+    background-color: thistle;
 }
 
 section {
-    float: left;
-    margin-left: 10px;
-    text-align: center;
+    margin-left: 40px;
 }
 
-#photo-template {
-    display: none;
+header {
+    text-align: center;
+    margin-top: 40px;
+    font-size: x-large;
 }
 
 footer {
-    clear: left;
-}
-
-p {
-    padding-left: 8px;
+    display: flex;
+    align-items: flex-end;
 }
